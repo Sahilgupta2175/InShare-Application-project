@@ -1,7 +1,7 @@
 # InShare-Application-project
 
 # Week 1: Project Setup and Basic Structure (Completed on 12 Jan 2025)
-# Goal: Set up the foundational structure for InShare.
+Goal: Set up the foundational structure for InShare.
 # 
 # Tasks:
 # 
