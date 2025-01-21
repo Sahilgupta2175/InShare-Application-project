@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InShare for File Upload</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+</head>
+<body>
+    <section class="upload-container">
+        <div class="drop-zone-container" id="dropZone">
+            <div class="icon-container">
+                <i class="fas fa-file-upload center-icon"></i>
+                <i class="fas fa-file-alt left-icon"></i>
+                <i class="fas fa-file-pdf right-icon"></i>
+            </div>
+            <input type="file" id="file-input" hidden>
+            <div class="title">Drop your files here or, <span class="browser-button">Browse file</span></div>
+            <div class="file-info" id="fileInfo"></div>
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar" id="progressBar"></div>
+                <div class="progress-text" id="progressText">0%</div>
+            </div>
+        </div>
+        <button class="upload-btn" id="uploadBtn" disabled>Upload File</button>
+    </section>
+    <script src="script.js"></script>
+</body>
+</html>
