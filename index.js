@@ -5,7 +5,6 @@ const { nanoid } = require("nanoid");  // For generating unique IDs
 const nodemailer = require("nodemailer");  // For sending emails
 const path = require("path");
 const app = express();
-const dotenv = require('dotenv').config();
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -19,20 +18,12 @@ const storage = multer.diskStorage({
   
 const upload = multer({ storage: storage });
 
-// // Email transporter setup (replace with your email credentials)
-// const transporter = nodemailer.createTransport({
-//     service: 'gmail',
-//     auth: {
-//         user: 'guptasahil2175@gmail.com',
-//         pass: 'htcq pgct yhhh javm'
-//     }
-// });
-
+// Email transporter setup (replace with your email credentials)
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
+        user: 'guptasahil2175@gmail.com',
+        pass: 'htcq pgct yhhh javm'
     }
 });
 
