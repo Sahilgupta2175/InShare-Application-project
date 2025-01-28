@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const emailToInput = document.querySelector("#emailTo");
     const sendEmailBtn = document.querySelector("#sendEmailBtn");
   
-    // Prevent default behavior for drag and drop events
     ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
       dropZone.addEventListener(eventName, preventDefaults, false);
     });
@@ -25,12 +24,10 @@ document.addEventListener("DOMContentLoaded", () => {
       e.stopPropagation();
     }
   
-    // Highlight drop zone on dragover or dragenter
     ["dragenter", "dragover"].forEach((eventName) => {
       dropZone.addEventListener(eventName, highlight, false);
     });
   
-    // Unhighlight drop zone on dragleave or drop
     ["dragleave", "drop"].forEach((eventName) => {
       dropZone.addEventListener(eventName, unhighlight, false);
     });
@@ -43,7 +40,6 @@ document.addEventListener("DOMContentLoaded", () => {
       dropZone.classList.remove("dragged");
     }
   
-    // Handle file drop
     dropZone.addEventListener("drop", handleDrop, false);
   
     function handleDrop(e) {
@@ -52,7 +48,6 @@ document.addEventListener("DOMContentLoaded", () => {
       handleFiles(files);
     }
   
-    // Handle file selection from input
     fileInput.addEventListener("change", function () {
       handleFiles(this.files);
     });
@@ -65,82 +60,58 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   
-    // Display file information
     function displayFileInfo(file) {
-      const fileSize = (file.size / 1024 / 1024).toFixed(2); // File size in MB
+      const fileSize = (file.size / 1024 / 1024).toFixed(2);
       fileInfo.textContent = `${file.name} (${fileSize} MB)`;
       fileInfo.classList.add("show");
     }
   
-    // Handle upload button click
     uploadBtn.addEventListener("click", () => {
       if (fileInput.files.length > 0) {
         uploadFile(fileInput.files[0]);
       }
     });
   
-    // Upload file to the server
-    const uploadFile = async (file) => {
+    async function uploadFile(file) {
       const formData = new FormData();
-      formData.append("upload", file);
+      formData.append("file", file);
   
       try {
-        // Update UI during upload
         progressContainer.style.display = "block";
         dropZone.style.cursor = "wait";
         uploadBtn.disabled = true;
   
-        const xhr = new XMLHttpRequest();
+        const response = await fetch("/upload", {
+          method: "POST",
+          body: formData,
+        });
   
-        // Track upload progress
-        xhr.upload.onprogress = (event) => {
-          if (event.lengthComputable) {
-            const percentComplete = (event.loaded / event.total) * 100;
-            progressBar.style.width = percentComplete + "%";
-            progressText.textContent = percentComplete.toFixed(2) + "%";
-          }
-        };
-  
-        // Handle upload success
-        xhr.onload = () => {
-          if (xhr.status === 200) {
-            const response = JSON.parse(xhr.responseText);
-            console.log("Upload complete", response);
-            alert("File uploaded successfully!");
-            uploadComplete();
-          } else {
-            console.error("Upload failed");
-            alert("Upload failed!");
-            resetUpload();
-          }
-        };
-  
-        // Handle upload error
-        xhr.onerror = () => {
-          console.error("Upload error");
-          alert("Error uploading file!");
+        if (response.ok) {
+          const result = await response.json();
+          console.log("Upload complete", result);
+          alert("File uploaded successfully!");
+          uploadComplete(result.fileUrl);
+        } else {
+          console.error("Upload failed");
+          alert("Upload failed!");
           resetUpload();
-        };
-  
-        // Send the request
-        xhr.open("POST", "/", true);
-        xhr.send(formData);
+        }
       } catch (err) {
         console.error("Error uploading file: ", err);
         alert("Error uploading file! Please try again.");
         resetUpload();
       }
-    };
+    }
   
-    // Reset UI after upload completion
-    function uploadComplete() {
+    function uploadComplete(fileUrl) {
       uploadContainer.classList.add("success");
+      shareContainer.style.display = "block";
+      fileURLInput.value = fileUrl;
       setTimeout(() => {
         resetUpload();
       }, 2000);
     }
   
-    // Reset the upload process and UI
     function resetUpload() {
       fileInfo.textContent = "";
       fileInfo.classList.remove("show");
@@ -153,57 +124,52 @@ document.addEventListener("DOMContentLoaded", () => {
       dropZone.style.cursor = "default";
     }
   
-    // Open file input dialog on browser button click
     browserBtn.addEventListener("click", () => {
       fileInput.click();
     });
 
-    // Copy to clipboard functionality
     copyURLBtn.addEventListener("click", async () => {
-        try {
-            await navigator.clipboard.writeText(fileURLInput.value);
-            copyURLBtn.textContent = "Copied!";
-            setTimeout(() => {
-                copyURLBtn.textContent = "Copy Link";
-            }, 2000);
-        }
-        catch (err) {
-            console.error("Failed to copy:", err);
-        }
+      try {
+        await navigator.clipboard.writeText(fileURLInput.value);
+        copyURLBtn.textContent = "Copied!";
+        setTimeout(() => {
+          copyURLBtn.textContent = "Copy Link";
+        }, 2000);
+      } catch (err) {
+        console.error("Failed to copy:", err);
+      }
     });
 
-    // Send email functionality
     sendEmailBtn.addEventListener("click", async () => {
-        const emailTo = emailToInput.value;
-        if (!emailTo) {
-            alert("Please enter an email address");
-            return;
-        }
+      const emailTo = emailToInput.value;
+      if (!emailTo) {
+        alert("Please enter an email address");
+        return;
+      }
 
-        try {
-            sendEmailBtn.disabled = true;
-            sendEmailBtn.textContent = "Sending...";
-            
-            const response = await fetch("/send-email", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    emailTo,
-                    fileUrl: fileURLInput.value
-                })
-            });
+      try {
+        sendEmailBtn.disabled = true;
+        sendEmailBtn.textContent = "Sending...";
+        
+        const response = await fetch("/send-email", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            emailTo,
+            fileUrl: fileURLInput.value
+          })
+        });
 
-            const data = await response.json();
-            alert(data.message);
-        }
-        catch (error) {
-            alert("Error sending email");
-        }
-        finally {
-            sendEmailBtn.disabled = false;
-            sendEmailBtn.textContent = "Send Email";
-        }
+        const data = await response.json();
+        alert(data.message);
+      } catch (error) {
+        console.error("Error sending email:", error);
+        alert("Error sending email");
+      } finally {
+        sendEmailBtn.disabled = false;
+        sendEmailBtn.textContent = "Send Email";
+      }
     });
 });
