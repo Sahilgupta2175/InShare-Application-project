@@ -24,6 +24,18 @@
                 <div class="progress-text" id="progressText">0%</div>
             </div>
         </div>
+
+        <div class="share-container" style="display: none;">
+            <h3>File Uploaded Successfully!</h3>
+            <div class="input-group">
+                <input type="text" id="fileURL" readonly>
+                <button id="copyURLBtn">Copy Link</button>
+            </div>
+            <div class="input-group">~
+                <input type="email" id="emailTo" placeholder="Email to">
+                <button id="sendEmailBtn">Send Email</button>
+            </div>
+        </div>
         <button class="upload-btn" id="uploadBtn" disabled>Upload File</button>
     </section>
     <script src="script.js"></script>

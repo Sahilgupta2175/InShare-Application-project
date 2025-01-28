@@ -238,6 +238,39 @@ body, .drop-zone-container {
     border-color: var(--error-color);
 }
 
+.share-container {
+    margin: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.input-group {
+    display: flex;
+    margin: 10px 0;
+}
+
+.input-group input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px 0 0 5px;
+}
+
+.input-group button {
+    padding: 10px 20px;
+    background: #4362ee;
+    color: white;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+}
+
+.input-group button:hover {
+    background: #2941c9;
+}
+
 @media (max-width: 600px) {
     .upload-container {
         width: 90%;

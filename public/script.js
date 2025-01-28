@@ -9,6 +9,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const uploadBtn = document.getElementById("uploadBtn");
     const uploadContainer = document.querySelector(".upload-container");
     const browserBtn = document.querySelector(".browser-button");
+    const shareContainer = document.querySelector(".share-container");
+    const fileURLInput = document.querySelector("#fileURL");
+    const copyURLBtn = document.querySelector("#copyURLBtn");
+    const emailToInput = document.querySelector("#emailTo");
+    const sendEmailBtn = document.querySelector("#sendEmailBtn");
   
     // Prevent default behavior for drag and drop events
     ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
@@ -152,4 +157,53 @@ document.addEventListener("DOMContentLoaded", () => {
     browserBtn.addEventListener("click", () => {
       fileInput.click();
     });
-});  
+
+    // Copy to clipboard functionality
+    copyURLBtn.addEventListener("click", async () => {
+        try {
+            await navigator.clipboard.writeText(fileURLInput.value);
+            copyURLBtn.textContent = "Copied!";
+            setTimeout(() => {
+                copyURLBtn.textContent = "Copy Link";
+            }, 2000);
+        }
+        catch (err) {
+            console.error("Failed to copy:", err);
+        }
+    });
+
+    // Send email functionality
+    sendEmailBtn.addEventListener("click", async () => {
+        const emailTo = emailToInput.value;
+        if (!emailTo) {
+            alert("Please enter an email address");
+            return;
+        }
+
+        try {
+            sendEmailBtn.disabled = true;
+            sendEmailBtn.textContent = "Sending...";
+            
+            const response = await fetch("/send-email", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    emailTo,
+                    fileUrl: fileURLInput.value
+                })
+            });
+
+            const data = await response.json();
+            alert(data.message);
+        }
+        catch (error) {
+            alert("Error sending email");
+        }
+        finally {
+            sendEmailBtn.disabled = false;
+            sendEmailBtn.textContent = "Send Email";
+        }
+    });
+});
