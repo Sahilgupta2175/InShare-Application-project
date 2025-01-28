@@ -37,3 +37,21 @@ Video: Creating a Progress Bar
 Deliverables:
 
 Functional drag-and-drop file upload system with a progress bar.
+
+# Week 3: Link Generation and Email Integration
+Goal: Generate shareable links and integrate email functionality.
+
+Tasks:
+
+Create unique URLs for uploaded files.
+Reading: Node.js URL Module
+Video: Working with URLs in Node.js
+Use Nodemailer for sending email links.
+Reading: Nodemailer Docs
+Video: Nodemailer Tutorial
+Add a copy-to-clipboard feature for file links.
+Reading: Clipboard API Docs
+Video: Clipboard API Usage
+Deliverables:
+
+Shareable link generation and email functionality.
